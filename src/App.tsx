@@ -1,35 +1,38 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useRef } from "react";
+import { Heading, Text } from "@radix-ui/themes";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const inputColorRef = useRef<HTMLInputElement>(null);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <section className="min-w-[300px] grid place-items-center">
+      <div className="flex flex-col gap-4">
+        <Heading as="h1">TLDRify this page</Heading>
+        <form
+          onSubmit={(e) => e.preventDefault()}
+          onChange={summarise}
+          className="flex flex-col gap-4 items-center"
+        >
+          <Text className="flex gap-1" as="label" htmlFor="color">
+            <span>BG color</span>
+            <input ref={inputColorRef} name="color" id="color" type="color" />
+          </Text>
+        </form>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </section>
+  );
+
+  async function summarise() {
+    const [tab] = await chrome.tabs.query({ active: true });
+
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id! },
+      args: [inputColorRef.current!.value],
+      func: (color) => {
+        document.body.style.backgroundColor = color;
+      },
+    });
+  }
 }
 
-export default App
+export default App;

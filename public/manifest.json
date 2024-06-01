@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "version": "1.0.0",
+  "name": "TLDRify - Summarize any web page",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "icons": {
+    "32": "icon.png"
+  },
+  "permissions": ["scripting"]
+}
